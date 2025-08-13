@@ -1,0 +1,17 @@
+[Unit]
+Description=API Seiscomp-SMART 
+After=network.target
+
+[Service]
+User=litbang
+Group=litbang
+WorkingDirectory=/home/litbang/AppSMART/Services
+ExecStart=/home/litbang/miniconda3/envs/smartapp/bin/uvicorn main:app --host 0.0.0.0 --port 5738 --log-level debug
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+Environment="PYTHONUNBUFFERED=1"
+
+[Install]
+WantedBy=multi-user.target

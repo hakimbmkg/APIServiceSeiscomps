@@ -1,0 +1,4 @@
+obspy
+influxdb-client
+lxml
+numpy

@@ -1,0 +1,44 @@
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: smart_influxdb 
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+      - influxdb_config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=your_user_name
+      - DOCKER_INFLUXDB_INIT_PASSWORD=your_password
+      - DOCKER_INFLUXDB_INIT_ORG=your_org
+      - DOCKER_INFLUXDB_INIT_BUCKET=seedlinksmart
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=your_token
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  seedlink_app:
+    build: .
+    container_name: smart_seedFlux_consumer 
+    network_mode: host 
+    depends_on:
+      influxdb:
+        condition: service_healthy 
+    environment: 
+      INFLUXDB_URL: http://127.0.0.1:8086 
+      INFLUXDB_TOKEN: your_token_influx
+      INFLUXDB_ORG: your_org_influx
+      INFLUXDB_BUCKET: seedlinksmart
+      SEEDLINK_SERVER: 127.0.0.1:18000 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  influxdb_data:
+  influxdb_config:
