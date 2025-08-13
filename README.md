@@ -17,3 +17,5 @@
     - get waveform form event detail
     - make background service using systemctl
  
+- **Example** :
+[a relative link] http://103.169.3.72:5300/
